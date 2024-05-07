@@ -44,5 +44,6 @@ def string_a_seq(s):
         seq.append(-1)
     seq.append(0)
     return seq
-        
-print(string_a_seq("Hola, ¿cómo estás?"))
+
+       
+#print(string_a_seq("Hola, ¿cómo estás?"))
