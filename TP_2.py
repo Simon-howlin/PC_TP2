@@ -8,7 +8,7 @@ Bloques esenciales:
     - Poner secuencia en una imagen
 -Desencodeador de mensajes ocultos
     - Sacar secuencia de una imagen
-    - Transformar secuencia a mensaje
+    - Transformar secuencia a mensaje --> LISTO
 
 Encriptación:
 -Aplicar Kuwahara 
@@ -44,6 +44,26 @@ def string_a_seq(s):
         seq.append(-1)
     seq.append(0)
     return seq
-
        
 #print(string_a_seq("Hola, ¿cómo estás?"))
+
+def seq_a_string(seq):
+    string = ''
+    guardar_todo = []
+    guardar_char = ''
+    for n in seq:
+        if n == 0:
+            for num in guardar_todo:
+                string += num_a_char(int(num))
+            return string 
+        if n == -1:
+            guardar_todo.append(guardar_char)
+            guardar_char = ''
+        else:
+            guardar_char += str(n - 1)
+
+
+
+
+#seq = [9, -1, 2, 6, -1, 2, 3, -1, 2, -1, 3, 10, -1, 3, 8, -1, 4, 3, -1, 4, -1, 5, 5, -1, 2, 4, -1, 2, 6, -1, 3, 8, -1, 6, -1, 2, 10, -1, 3, 1, -1, 5, 2, -1, 2, 10, -1, 4, 1, -1, 0]
+#print(seq_a_string(seq))
