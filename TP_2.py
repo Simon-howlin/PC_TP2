@@ -7,7 +7,7 @@ Bloques esenciales:
 -Aplicador Kuwahara
 -Encodeador de mensajes ocultos
     - Transformar mensaje a secuencia --> LISTO
-    - Poner secuencia en una imagen --> CASI LISTO
+    - Poner secuencia en una imagen --> LISTO (optimizar)
 -Desencodeador de mensajes ocultos
     - Sacar secuencia de una imagen
     - Transformar secuencia a mensaje --> LISTO
@@ -29,13 +29,13 @@ Desencriptación:
 """
 TABLA_CHARS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " ", ".", ",", "?", "!", "¿", "¡", "(", ")", ":", ";", "-", '"', "'", "á", "é", "í", "ó", "ú", "ü", "ñ"]
 
-def num_a_char(n):
+def num_a_char(n : int) -> str:
     return TABLA_CHARS[n-1]
 
-def char_a_num(c):
+def char_a_num(c : str) -> int:
     return TABLA_CHARS.index(c) + 1
 
-def string_a_seq(s):
+def string_a_seq(s : str) -> list:
     s = s.lower()
     seq = []
     for c in s:
@@ -49,7 +49,7 @@ def string_a_seq(s):
        
 #print(string_a_seq("Hola, ¿cómo estás?"))
 
-def seq_a_string(seq):
+def seq_a_string(seq : list) -> str:
     string = ''
     guardar_todo = []
     guardar_char = ''
@@ -70,7 +70,7 @@ def seq_a_string(seq):
 def seq_a_imagen():
     im = Image.open("imagen.jpeg")
     width,height = im.size
-    array = np.array(im)
+    array_im = np.array(im)
     # array[num_fila,num_col,CANAL] # NUM_CANAL: rojo = 0, verde = 1, azul = 2
 
     seq = string_a_seq()
@@ -80,10 +80,10 @@ def seq_a_imagen():
         for j in range(0,width,2):
             
             varianzas = []
-            sup_izq = array[i,j,:]
-            sup_der = array[i,j+1,:]
-            inf_izq = array[i+1,j,:]
-            inf_der = array[i+1,j+1,:]
+            sup_izq = array_im[i,j,:]
+            sup_der = array_im[i,j+1,:]
+            inf_izq = array_im[i+1,j,:]
+            inf_der = array_im[i+1,j+1,:]
 
             for canal in (0,3):
                 chek_vari = np.var[sup_der[canal],sup_izq[canal], inf_izq[canal]]
@@ -98,8 +98,14 @@ def seq_a_imagen():
             
             contador += 1
             if contador >= len(seq):
-                im = Image.fromarray(array)
+                im = Image.fromarray(array_im)
                 im.save("your_file.jpeg")
                 return
 
+def padding(array_im):
+    pad = np.pad(array_im,((2,2),(2,2),(0,0)),mode = 'edge')
+    return pad
 
+def kuwahara(array_im):
+    im_padded = padding(array_im)
+    
