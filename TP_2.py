@@ -1,5 +1,6 @@
 from PIL import Image
 import numpy as np
+###################### codigos borradores ###############################
 """
 Bloques esenciales:
 -Convertidor Char a Num --> LISTO
@@ -7,9 +8,9 @@ Bloques esenciales:
 -Aplicador Kuwahara
 -Encodeador de mensajes ocultos
     - Transformar mensaje a secuencia --> LISTO
-    - Poner secuencia en una imagen --> LISTO (optimizar)
+    - Poner secuencia en una imagen --> LISTO
 -Desencodeador de mensajes ocultos
-    - Sacar secuencia de una imagen --> LISTO (optimizar)
+    - Sacar secuencia de una imagen --> LISTO
     - Transformar secuencia a mensaje --> LISTO
 
 Encriptación:
@@ -64,83 +65,75 @@ def seq_a_string(seq : list) -> str:
         else:
             guardar_char += str(n - 1)
 
+#calcular vari            
+def calcular_varianza(array, i,j):
+    varianzas = []
+
+    sup_izq = array[i,j,:]
+    sup_der = array[i,j+1,:]
+    inf_izq = array[i+1,j,:]
+    inf_der = array[i+1,j+1,:]
+    for canal in range(0,3):
+        chek_vari = np.var([sup_izq[canal], sup_der[canal], inf_izq[canal]])
+        varianzas.append(chek_vari)
+    return varianzas, sup_izq, sup_der, inf_izq, inf_der
 
 ########################################## codigos principales ##############################################################
 
-#encript:
-def seq_a_imagen():
-    im = Image.open("imagen.jpeg")
-    width,height = im.size
-    array_im = np.array(im)
-    # array[num_fila,num_col,CANAL] # NUM_CANAL: rojo = 0, verde = 1, azul = 2
+############### encript ######################
+def valor_a_cuadrante(valor, array, i,j):
+    
+    varianzas, sup_izq, sup_der, inf_izq, inf_der = valor_a_cuadrante(array, i, j)
 
-    seq = string_a_seq()
+    min_varianzas = min(varianzas)
+    modificar_x_canal = varianzas.index(min_varianzas)
+    promedio_menor_var = sum([sup_izq[modificar_x_canal], sup_der[modificar_x_canal], inf_izq[modificar_x_canal]]) / 3
+    reemplazar_canal = (promedio_menor_var + valor) % 256
+    
+    inf_der[modificar_x_canal] = reemplazar_canal
+
+def seq_a_imagen(seq):
+    im_in = Image.open('imagen.jpeg')
+    width,height = im_in.size
+    array_im = np.array(im_in)
 
     contador = 0
     for i in range(0,height,2):
         for j in range(0,width,2):
-            
-            varianzas = []
-            sup_izq = array_im[i,j,:]
-            sup_der = array_im[i,j+1,:]
-            inf_izq = array_im[i+1,j,:]
-            inf_der = array_im[i+1,j+1,:]
-
-            for canal in (0,3):
-                chek_vari = np.var[sup_der[canal],sup_izq[canal], inf_izq[canal]]
-                varianzas.append(chek_vari)
-
-            min_varianzas = min(varianzas)
-            modificar_x_canal = varianzas.index(min_varianzas)
-            promedio_menor_var = sum([sup_izq[modificar_x_canal], sup_der[modificar_x_canal], inf_izq[modificar_x_canal]]) / 3
-            reemplazar_canal = (promedio_menor_var + seq[contador]) % 256
-            
-            inf_der[modificar_x_canal] = reemplazar_canal
+            valor_a_cuadrante(seq[contador], array_im, i, j)
             
             contador += 1
             if contador >= len(seq):
-                im = Image.fromarray(array_im)
-                im.save("your_file.jpeg")
-                return
-
-#padding
+                im_out = Image.fromarray(array_im)
+                return im_out
+############### padding ########################
 def padding(array_im):
     pad = np.pad(array_im,((2,2),(2,2),(0,0)),mode = 'edge')
     return pad
 
-#aplicar filtro
+################ aplicar filtro ################
 def kuwahara(array_im):
     im_padded = padding(array_im)
 
-#desencript:
+################### desencript #################
 def imagen_a_seq():
-    im_encript = Image.open("your_file.jpeg")
+    im_encript = Image.open("your_file.png")
     width,height = im_encript.size
     array_im = np.array(im_encript)
 
-    seq = string_a_seq()
-
+    seq = []
     for i in range(0,height,2):
         for j in range(0,width,2):
-            
-            seq = []
-        
-            varianzas = []
-            sup_izq = array_im[i,j,:]
-            sup_der = array_im[i,j+1,:]
-            inf_izq = array_im[i+1,j,:]
-            inf_der = array_im[i+1,j+1,:]
+            varianzas, sup_izq, sup_der, inf_izq, inf_der = calcular_varianza(array_im, i, j)
 
-            for canal in (0,3):
-                chek_vari = np.var[sup_der[canal],sup_izq[canal], inf_izq[canal]]
-                varianzas.append(chek_vari)
-                
             min_varianzas = min(varianzas)
             canal_encript = varianzas.index(min_varianzas)
 
-            promedio_menor_var = sum([sup_izq[canal_encript], sup_der[canal_encript], inf_izq[canal_encript]]) / 3
-            extraer_valor = (inf_der[canal_encript] - promedio_menor_var) % 256
-            seq.append(extraer_valor)
+            promedio_menor_var = sum([sup_izq[canal_encript], sup_der[canal_encript], inf_izq[canal_encript]]) // 3
+            extraer_valor = inf_der[canal_encript] - promedio_menor_var
+            if extraer_valor < -1:
+                extraer_valor += 256
 
-            return seq
-            
+            seq.append(extraer_valor)
+            if extraer_valor == 0:
+                return seq

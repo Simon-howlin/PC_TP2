@@ -1,0 +1,58 @@
+from PIL import Image
+import numpy as np
+
+TABLA_CHARS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " ", ".", ",", "?", "!", "¿", "¡", "(", ")", ":", ";", "-", '"', "'", "á", "é", "í", "ó", "ú", "ü", "ñ"]
+
+def num_a_char(n : int) -> str:
+    return TABLA_CHARS[n-1]
+
+def seq_a_string(seq : list) -> str:
+    string = ''
+    guardar_todo = []
+    guardar_char = ''
+    for n in seq:
+        if n == 0:
+            for num in guardar_todo:
+                string += num_a_char(int(num))
+            print(guardar_todo)
+            return string 
+        if n == -1:
+            guardar_todo.append(guardar_char)
+            guardar_char = ''
+        else:
+            guardar_char += str(n - 1)
+
+#calcular vari            
+def calcular_varianza(array, i,j):
+    varianzas = []
+
+    sup_izq = array[i,j,:]
+    sup_der = array[i,j+1,:]
+    inf_izq = array[i+1,j,:]
+    inf_der = array[i+1,j+1,:]
+    for canal in range(0,3):
+        chek_vari = np.var([sup_izq[canal], sup_der[canal], inf_izq[canal]])
+        varianzas.append(chek_vari)
+    return varianzas, sup_izq, sup_der, inf_izq, inf_der
+
+
+def imagen_a_seq(im_encript):
+    width,height = im_encript.size
+    array_im = np.array(im_encript)
+
+    seq = []
+    for i in range(0,height,2):
+        for j in range(0,width,2):
+            varianzas, sup_izq, sup_der, inf_izq, inf_der = calcular_varianza(array_im, i, j)
+
+            min_varianzas = min(varianzas)
+            canal_encript = varianzas.index(min_varianzas)
+
+            promedio_menor_var = sum([sup_izq[canal_encript], sup_der[canal_encript], inf_izq[canal_encript]]) // 3
+            extraer_valor = inf_der[canal_encript] - promedio_menor_var
+            if extraer_valor < -1:
+                extraer_valor += 256
+
+            seq.append(extraer_valor)
+            if extraer_valor == 0:
+                return seq
