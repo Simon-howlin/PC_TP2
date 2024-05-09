@@ -29,12 +29,14 @@ Desencriptación:
 """
 TABLA_CHARS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " ", ".", ",", "?", "!", "¿", "¡", "(", ")", ":", ";", "-", '"', "'", "á", "é", "í", "ó", "ú", "ü", "ñ"]
 
+#func individuales:
 def num_a_char(n : int) -> str:
     return TABLA_CHARS[n-1]
 
 def char_a_num(c : str) -> int:
     return TABLA_CHARS.index(c) + 1
 
+#func traducciones:
 def string_a_seq(s : str) -> list:
     s = s.lower()
     seq = []
@@ -46,8 +48,6 @@ def string_a_seq(s : str) -> list:
         seq.append(-1)
     seq.append(0)
     return seq
-       
-#print(string_a_seq("Hola, ¿cómo estás?"))
 
 def seq_a_string(seq : list) -> str:
     string = ''
@@ -64,9 +64,10 @@ def seq_a_string(seq : list) -> str:
         else:
             guardar_char += str(n - 1)
 
-#seq = [9, -1, 2, 6, -1, 2, 3, -1, 2, -1, 3, 10, -1, 3, 8, -1, 4, 3, -1, 4, -1, 5, 5, -1, 2, 4, -1, 2, 6, -1, 3, 8, -1, 6, -1, 2, 10, -1, 3, 1, -1, 5, 2, -1, 2, 10, -1, 4, 1, -1, 0]
-#print(seq_a_string(seq))
 
+########################################## codigos principales ##############################################################
+
+#encript:
 def seq_a_imagen():
     im = Image.open("imagen.jpeg")
     width,height = im.size
@@ -102,10 +103,42 @@ def seq_a_imagen():
                 im.save("your_file.jpeg")
                 return
 
+#padding
 def padding(array_im):
     pad = np.pad(array_im,((2,2),(2,2),(0,0)),mode = 'edge')
     return pad
 
+#aplicar filtro
 def kuwahara(array_im):
     im_padded = padding(array_im)
-    
+
+#desencript:
+def imagen_a_seq():
+    im_encript = Image.open("your_file.jpeg")
+    width,height = im_encript.size
+    array_im = np.array(im_encript)
+
+    seq = string_a_seq()
+
+    for i in range(0,height,2):
+        for j in range(0,width,2):
+            
+            seq = []
+        
+            varianzas = []
+            sup_izq = array_im[i,j,:]
+            sup_der = array_im[i,j+1,:]
+            inf_izq = array_im[i+1,j,:]
+            inf_der = array_im[i+1,j+1,:]
+
+            for canal in (0,3):
+                chek_vari = np.var[sup_der[canal],sup_izq[canal], inf_izq[canal]]
+                varianzas.append(chek_vari)
+                
+            min_varianzas = min(varianzas)
+            canal_encript = varianzas.index(min_varianzas)
+            promedio_menor_var = sum([sup_izq[canal_encript], sup_der[canal_encript], inf_izq[canal_encript]]) / 3
+            extraer_valor = (inf_der[canal_encript] - promedio_menor_var) % 256
+
+            return seq
+            
