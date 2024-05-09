@@ -9,7 +9,7 @@ Bloques esenciales:
     - Transformar mensaje a secuencia --> LISTO
     - Poner secuencia en una imagen --> LISTO (optimizar)
 -Desencodeador de mensajes ocultos
-    - Sacar secuencia de una imagen
+    - Sacar secuencia de una imagen --> LISTO (optimizar)
     - Transformar secuencia a mensaje --> LISTO
 
 Encriptación:
@@ -22,7 +22,7 @@ Encriptación:
 -Modificar pixeles para encodear el mensaje
     -pasos (en la pag)
     -pasos (en la pag)
--El resultado es la imagen con filtro y mensaje
+-El resultado es la imagen con filtro y mensaje (SIN EL PADDING!! se usa solo para aplicar kuahara)
 
 Desencriptación:
 -Inversos del otro (del encripción)
@@ -137,8 +137,10 @@ def imagen_a_seq():
                 
             min_varianzas = min(varianzas)
             canal_encript = varianzas.index(min_varianzas)
+
             promedio_menor_var = sum([sup_izq[canal_encript], sup_der[canal_encript], inf_izq[canal_encript]]) / 3
             extraer_valor = (inf_der[canal_encript] - promedio_menor_var) % 256
+            seq.append(extraer_valor)
 
             return seq
             
