@@ -5,7 +5,7 @@ TABLA_CHARS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", 
 
 def char_a_num(c : str) -> int:
     """
-    Recibe un caracter y lo convierte al número correspondiente según la tabla de chars.
+    Recibe un caracter y lo convierte al número correspondiente según la tabla de caracteres.
 
     PARAMETRO:
         - c (str): el caracter que es pasado a número.
