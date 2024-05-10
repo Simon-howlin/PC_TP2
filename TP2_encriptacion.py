@@ -4,9 +4,28 @@ import numpy as np
 TABLA_CHARS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " ", ".", ",", "?", "!", "¿", "¡", "(", ")", ":", ";", "-", '"', "'", "á", "é", "í", "ó", "ú", "ü", "ñ"]
 
 def char_a_num(c : str) -> int:
+    """
+    pasa de caracter a numero
+
+    PARAMETRO:
+        c(str): el caracter que es pasado a numero
+    
+    RETURN:
+        un int que fue remplazado por el str dado
+    """
     return TABLA_CHARS.index(c) + 1
 
 def string_a_seq(s : str) -> list:
+    """
+    usando la cadena recivida 
+    lo transforma a una lista de secuencia
+
+    PARAMETRO:
+        s(str): la cadena para pasar a secuencia 
+    
+    RETURN:
+        seq(list): devuelve una lista con la secuencia dentro
+    """
     s = s.lower()
     seq = []
     for c in s:
@@ -19,7 +38,19 @@ def string_a_seq(s : str) -> list:
     return seq
 
 #calcular vari            
-def calcular_varianza(array, i,j):
+def calcular_varianza(array, i:int,j:int) -> list:
+    """
+    calcula las varianzas en el canal
+
+    PARAMETRO:
+        array():
+        i(int): numero de fila
+        j(int): numero de columna
+    
+    RETURN:
+        varianzas(list): una lista con ints que son 
+                         las varianzas de los canales
+    """
     varianzas = []
 
     sup_izq = array[i,j,:]
@@ -31,7 +62,7 @@ def calcular_varianza(array, i,j):
         varianzas.append(chek_vari)
     return varianzas, sup_izq, sup_der, inf_izq, inf_der
 
-#encript:
+#encript
 def valor_a_cuadrante(valor, array, i,j):
     
     varianzas, sup_izq, sup_der, inf_izq, inf_der = valor_a_cuadrante(array, i, j)
@@ -65,8 +96,3 @@ def padding(array_im):
 #aplicar filtro
 def kuwahara(array_im):
     im_padded = padding(array_im)
-
-def main():
-    pass
-
-main()

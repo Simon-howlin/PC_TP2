@@ -4,9 +4,28 @@ import numpy as np
 TABLA_CHARS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " ", ".", ",", "?", "!", "¿", "¡", "(", ")", ":", ";", "-", '"', "'", "á", "é", "í", "ó", "ú", "ü", "ñ"]
 
 def num_a_char(n : int) -> str:
+    """
+    pasar numero a caracter
+
+    PARAMETRO:
+        n(int): el numero que es pasado a caracter
+    
+    RETURN:
+        un string que fue remplazado por el numero dado
+    """
     return TABLA_CHARS[n-1]
 
 def seq_a_string(seq : list) -> str:
+    """
+    usando la secuencia recivida 
+    lo transforma a una cadena
+
+    PARAMETRO:
+        seq(int): la secuencia pasada a cadena 
+    
+    RETURN:
+        string(str): devuelve una cadena con un mensaje
+    """
     string = ''
     guardar_todo = []
     guardar_char = ''
@@ -14,7 +33,6 @@ def seq_a_string(seq : list) -> str:
         if n == 0:
             for num in guardar_todo:
                 string += num_a_char(int(num))
-            print(guardar_todo)
             return string 
         if n == -1:
             guardar_todo.append(guardar_char)
@@ -23,7 +41,19 @@ def seq_a_string(seq : list) -> str:
             guardar_char += str(n - 1)
 
 #calcular vari            
-def calcular_varianza(array, i,j):
+def calcular_varianza(array, i:int,j:int) -> int:
+    """
+    calcula las varianzas en el canal
+
+    PARAMETRO:
+        array():
+        i(int): numero de fila
+        j(int): numero de columna
+    
+    RETURN:
+        varianzas(list): una lista con ints que son 
+                         las varianzas de los canales
+    """
     varianzas = []
 
     sup_izq = array[i,j,:]
@@ -35,7 +65,7 @@ def calcular_varianza(array, i,j):
         varianzas.append(chek_vari)
     return varianzas, sup_izq, sup_der, inf_izq, inf_der
 
-
+#desencript
 def imagen_a_seq(im_encript):
     width,height = im_encript.size
     array_im = np.array(im_encript)
