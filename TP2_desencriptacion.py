@@ -5,26 +5,26 @@ TABLA_CHARS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", 
 
 def num_a_char(n : int) -> str:
     """
-    pasar numero a caracter
+    Recibe un número y lo convierte al caracter 
+    correspondiente según la tabla de caracteres.
 
     PARAMETRO:
-        n(int): el numero que es pasado a caracter
+        - n (int): el numero que es pasado a caracter.
     
     RETURN:
-        un string que fue remplazado por el numero dado
+        - str: caracter correspondiente con el número dado.
     """
     return TABLA_CHARS[n-1]
 
 def seq_a_string(seq : list) -> str:
     """
-    usando la secuencia recivida 
-    lo transforma a una cadena
+    Recibe una secuencia de números y devuelve el string correspondiente.
 
     PARAMETRO:
-        seq(int): la secuencia pasada a cadena 
+        - seq (list): la secuencia para convertir a cadena. 
     
     RETURN:
-        string(str): devuelve una cadena con un mensaje
+        - str: cadena correspondiente para la secuencia de números.
     """
     string = ''
     guardar_todo = []
@@ -39,36 +39,47 @@ def seq_a_string(seq : list) -> str:
             guardar_char = ''
         else:
             guardar_char += str(n - 1)
-
-#calcular vari            
-def calcular_varianza(array, i:int,j:int) -> int:
+        
+def calcular_varianza(array_im: np.array, i: int, j: int) -> int:
     """
-    calcula las varianzas en el canal
+    Recibe el array 3D de la imagen y una posición, y devuelve
+    las varianzas de cada canal y los valores de los 3 canales en cada posición del cuadrante.
 
     PARAMETRO:
-        array():
-        i(int): numero de fila
-        j(int): numero de columna
+        - array (np.array): array 3D de la imagen.
+        - i (int): numero de fila de la posicion superior izquierda.
+        - j (int): numero de columna de la posicion superior izquierda.
     
     RETURN:
-        varianzas(list): una lista con ints que son 
-                         las varianzas de los canales
+        - list: una lista con las varianzas de los 3 canales.
+        - np.array: valores de los 3 canales de la posicion superior izquierda.
+        - np.array: valores de los 3 canales de la posicion superior derecha.
+        - np.array: valores de los 3 canales de la posicion inferior izquierda.
+        - np.array: valores de los 3 canales de la posicion inferior derecha.
     """
     varianzas = []
 
-    sup_izq = array[i,j,:]
-    sup_der = array[i,j+1,:]
-    inf_izq = array[i+1,j,:]
-    inf_der = array[i+1,j+1,:]
+    sup_izq = array_im[i,j,:]
+    sup_der = array_im[i,j+1,:]
+    inf_izq = array_im[i+1,j,:]
+    inf_der = array_im[i+1,j+1,:]
     for canal in range(0,3):
         chek_vari = np.var([sup_izq[canal], sup_der[canal], inf_izq[canal]])
         varianzas.append(chek_vari)
     return varianzas, sup_izq, sup_der, inf_izq, inf_der
 
-#desencript
-def imagen_a_seq(im_encript):
-    width,height = im_encript.size
-    array_im = np.array(im_encript)
+def imagen_a_seq(array_im: np.array) -> list:
+    """
+    Recibe un array 3D correspondiente con una imagen
+    y devuelve una secuencia de números oculta en ella.
+
+    PARAMETRO:
+        - array_im (np.array): array 3D de la imagen.
+    
+    RETURN:
+        - list: secuencia de números escondidos en la imagen.
+    """
+    height,width,_ = array_im.shape
 
     seq = []
     for i in range(0,height,2):
@@ -86,3 +97,4 @@ def imagen_a_seq(im_encript):
             seq.append(extraer_valor)
             if extraer_valor == 0:
                 return seq
+            
