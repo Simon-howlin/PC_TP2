@@ -128,6 +128,21 @@ def padding(array_im: np.array) -> np.array:
     pad = np.pad(array_im,((2,2),(2,2),(0,0)),mode = 'edge')
     return pad
 
-#aplicar filtro falta 
+#aplicar filtro en proceso:
+def calcular_varianza_3x3(array_im: np.array, i: int, j: int) -> tuple:
+    suma_varianzas = 0
+    for canal in range(0,3):
+        suma_varianzas += np.var([array_im[i+offset_i, j+offset_j, canal] for offset_i in range(0,3) for offset_j in range(0,3)])
+    
+    return suma_varianzas, array_im[i:i+3,j:j+3,:]
+
+
 def kuwahara(array_im):
-    im_padded = padding(array_im)
+    height,width,_ = array_im.shape
+
+    for i in range(2,height-2):
+        for j in range(2,width-2):
+            var_qA, qA = calcular_varianza_3x3(array_im, i-2, j-2)  
+            var_qB, qB = calcular_varianza_3x3(array_im, i-2, j)    
+            var_qC, qC = calcular_varianza_3x3(array_im, i, j-2)
+            var_qD, qD = calcular_varianza_3x3(array_im, i, j)
