@@ -128,7 +128,7 @@ def padding(array_im: np.array) -> np.array:
     pad = np.pad(array_im,((2,2),(2,2),(0,0)),mode = 'edge')
     return pad
 
-#aplicar filtro en proceso:
+#aplicar filtro finished:  (NO OLVIDARME DE LOS DOCSTRINGS)
 def calcular_varianza_3x3(array_im: np.array, i: int, j: int) -> tuple:
     suma_varianzas = 0
     for canal in range(0,3):
@@ -136,9 +136,12 @@ def calcular_varianza_3x3(array_im: np.array, i: int, j: int) -> tuple:
     
     return suma_varianzas, array_im[i:i+3,j:j+3,:]
 
+def promedio_color(array_q: np.array, canal: int) -> int:
+    return sum([array_q[offset_i, offset_j, canal] for offset_i in range(0,3) for offset_j in range(0,3)]) // 9
 
-def kuwahara(array_im):
+def kuwahara(array_im: np.array) -> np.array:
     height,width,_ = array_im.shape
+    array_im_copy = array_im.copy()
 
     for i in range(2,height-2):
         for j in range(2,width-2):
@@ -146,3 +149,14 @@ def kuwahara(array_im):
             var_qB, qB = calcular_varianza_3x3(array_im, i-2, j)    
             var_qC, qC = calcular_varianza_3x3(array_im, i, j-2)
             var_qD, qD = calcular_varianza_3x3(array_im, i, j)
+            cuadrantes = [qA, qB, qC, qD]
+            varianzas = [var_qA, var_qB, var_qC, var_qD]
+            min_varianzas = min(varianzas)
+            indice = varianzas.index(min_varianzas)
+
+            q_seleccionado = cuadrantes[indice]
+            nuevo_pixel = [promedio_color(q_seleccionado, 0), promedio_color(q_seleccionado, 1), promedio_color(q_seleccionado, 2)]
+            array_im_copy[i,j,:] = nuevo_pixel
+
+    return array_im_copy[2:height-2, 2:width-2, :] #sin pad :)
+
