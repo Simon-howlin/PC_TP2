@@ -128,18 +128,55 @@ def padding(array_im: np.array) -> np.array:
     pad = np.pad(array_im,((2,2),(2,2),(0,0)),mode = 'edge')
     return pad
 
-#aplicar filtro finished:  (NO OLVIDARME DE LOS DOCSTRINGS)
+
 def calcular_varianza_3x3(array_im: np.array, i: int, j: int) -> tuple:
+    """
+    Recibe un array 3D correspondiente con una imagen y una posición,
+    y devuelve la suma de las varianzas de cada canal de un cuadrante de 3x3 
+    posicionado en la posición.
+
+    PARAMETRO:
+        - array_im (np.array): array 3D de la imagen.
+        - i (int): numero de fila de la posicion superior izquierda del cuadrante.
+        - j (int): numero de columna de la posicion superior izquierda del cuadrante.
+
+    RETURN:
+        - float: suma de las varianzas de cada canal del cuadrante 3x3.
+        - np.array: cuadrante 3x3 utilizado.
+    """
     suma_varianzas = 0
     for canal in range(0,3):
         suma_varianzas += np.var([array_im[i+offset_i, j+offset_j, canal] for offset_i in range(0,3) for offset_j in range(0,3)])
     
     return suma_varianzas, array_im[i:i+3,j:j+3,:]
 
+
 def promedio_color(array_q: np.array, canal: int) -> int:
+    """
+    Recibe un array 3D correspondiente con un cuadrante y un numero de canal
+    y devuelve el promedio de color de dicho cuadrante.
+
+    PARAMETRO:
+        - array_q (np.array): array 3D del cuadrante.
+        - canal (int): numero de cuadrante del canal.
+
+    RETURN:
+        - int: promedio del canal en el cuadrante.
+    """
     return sum([array_q[offset_i, offset_j, canal] for offset_i in range(0,3) for offset_j in range(0,3)]) // 9
 
+
 def kuwahara(array_im: np.array) -> np.array:
+    """
+    Recibe un array 3D correspondiente con una imagen, y devuelve otro array 3D
+    correspondiente con el filtro kuwahara aplicado en dicha imagen.
+
+    PARAMETRO:
+        - array_im (np.array): array 3D de la imagen.
+    
+    RETURN:
+        - (np.array): array 3D de la imagen habiendole aplicado el filtro kuwahara.
+    """
     height,width,_ = array_im.shape
     array_im_copy = array_im.copy()
 
@@ -157,6 +194,23 @@ def kuwahara(array_im: np.array) -> np.array:
             q_seleccionado = cuadrantes[indice]
             nuevo_pixel = [promedio_color(q_seleccionado, 0), promedio_color(q_seleccionado, 1), promedio_color(q_seleccionado, 2)]
             array_im_copy[i,j,:] = nuevo_pixel
-
+    
     return array_im_copy[2:height-2, 2:width-2, :] #sin pad :)
 
+
+def main():
+    print("≡≡Encriptador≡≡")
+    path_entrada = input("Ingrese nombre de la imagen a utilizar como base: ")
+    mensaje = input("Ingrese el mensaje a esconder: ")
+    path_salida = input("Ingrese nombre del archivo de salida: ")
+
+    im = Image.open(path_entrada)
+    array_im = np.array(im)
+    array_im = padding(array_im)
+    array_im = kuwahara(array_im)
+    seq = string_a_seq(mensaje)
+    im_encriptada = seq_a_imagen(seq, array_im)
+    im_encriptada.save(path_salida)
+
+if __name__ == "__main__":
+    main()

@@ -97,4 +97,18 @@ def imagen_a_seq(array_im: np.array) -> list:
             seq.append(extraer_valor)
             if extraer_valor == 0:
                 return seq
-            
+
+
+def main():
+    print("≡≡Desencriptador≡≡")
+    path_entrada = input("Ingrese nombre del archivo encriptado: ")
+    
+    im = Image.open(path_entrada)
+    array_im = np.array(im)
+    seq = imagen_a_seq(array_im)
+    mensaje = seq_a_string(seq)
+
+    print("El mensaje oculto es:", mensaje)
+
+if __name__ == "__main__":
+    main()

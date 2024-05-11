@@ -2,31 +2,31 @@ from PIL import Image
 import numpy as np
 ###################### codigos borradores ###############################
 """
-Bloques esenciales:
+Bloques esenciales: --> LISTOO TODOO
 -Convertidor Char a Num --> LISTO
 -Convertidor Num a Char --> LISTO
--Aplicador Kuwahara
--Encodeador de mensajes ocultos
+-Aplicador Kuwahara --> LISTO
+-Encodeador de mensajes ocultos --> FINISH
     - Transformar mensaje a secuencia --> LISTO
     - Poner secuencia en una imagen --> LISTO
--Desencodeador de mensajes ocultos
+-Desencodeador de mensajes ocultos --> FINISH
     - Sacar secuencia de una imagen --> LISTO
     - Transformar secuencia a mensaje --> LISTO
 
-Encriptación:
--Aplicar Kuwahara 
+Encriptación: --> LISTO TODOO
+-Aplicar Kuwahara --> FINISH
     -pasos (en la pag)
     -pasos (en la pag)
--Pasar a numeros
+-Pasar a numeros --> FINISH
     -Poner -1 entre letras
     -Agregar un 0 (final)
--Modificar pixeles para encodear el mensaje
+-Modificar pixeles para encodear el mensaje --> FINISH
     -pasos (en la pag)
     -pasos (en la pag)
--El resultado es la imagen con filtro y mensaje (SIN EL PADDING!! se usa solo para aplicar kuahara)
+-El resultado es la imagen con filtro y mensaje (SIN EL PADDING!! se usa solo para aplicar kuahara) --> FINISH
 
-Desencriptación:
--Inversos del otro (del encripción)
+Desencriptación: --> LISTOO TODOO
+-Inversos del otro (del encripción) --> FINISH
 """
 TABLA_CHARS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " ", ".", ",", "?", "!", "¿", "¡", "(", ")", ":", ";", "-", '"', "'", "á", "é", "í", "ó", "ú", "ü", "ñ"]
 
